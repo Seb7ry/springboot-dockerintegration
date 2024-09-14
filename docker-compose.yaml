@@ -1,0 +1,29 @@
+version: '3.8'  # Specifies the version of the Docker Compose file format being used. Version 3.8 is compatible with modern Docker versions.
+
+services:
+  # Defines the PostgreSQL database service.
+  postgres:
+    image: 'postgres:latest'  # Specifies the latest version of the official PostgreSQL image from Docker Hub.
+    environment:
+      - POSTGRES_DB=devops  # Sets the name of the database to be created when the container is started.
+      - POSTGRES_PASSWORD=admin  # Defines the password for the PostgreSQL database.
+      - POSTGRES_USER=root  # Specifies the username with superuser privileges for the PostgreSQL database.
+    ports:
+      - '5432:5432'  # Exposes the PostgreSQL service on port 5432 to the host machine, allowing external connections to the database.
+    volumes:
+      - postgres_data:/var/lib/postgresql/data  # Mounts a persistent volume to store the PostgreSQL data outside the container, ensuring the data is not lost if the container is removed.
+
+  # Defines the Spring Boot API service.
+  springboot-api:
+    build: .  # Builds the Spring Boot API service from the current directory, using the Dockerfile located there.
+    ports:
+      - '8080:8080'  # Exposes port 8080 to allow access to the Spring Boot API from the host machine or other containers.
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/devops  # Specifies the JDBC URL used by the Spring Boot application to connect to the PostgreSQL database.
+      SPRING_DATASOURCE_USERNAME: root  # Sets the username for connecting to the PostgreSQL database.
+      SPRING_DATASOURCE_PASSWORD: admin  # Sets the password for connecting to the PostgreSQL database.
+    depends_on:
+      - postgres  # Ensures the PostgreSQL container is started before the Spring Boot API container.
+
+volumes:
+  postgres_data:  # Declares a named volume that will store the PostgreSQL data, making it persistent across container restarts.

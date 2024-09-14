@@ -26,7 +26,7 @@ public class Movie {
      * This field is annotated with @Id, indicating that it serves as the primary key in the database.
      */
     @Id
-    private int id;
+    private Integer id;
 
     /**
      * The name of the movie.
