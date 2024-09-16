@@ -1,30 +1,30 @@
-version: '3.9'
+version: '3.9'  # Specifies the Docker Compose version to use.
 
 services:
   springboot-api:
-    container_name: springboot-api
-    image: devops-springboot-api:1.0.0
-    build: .
+    container_name: springboot-api  # Name of the container for the Spring Boot API service.
+    image: devops-springboot-api:1.0.0  # Specifies the Docker image for the Spring Boot application.
+    build: .  # Build the image from the Dockerfile in the current directory.
     ports:
-      - '8080:8080'
-    environment:
-      - DATABASE_URL=jdbc:postgresql://postgres:5432/devops
-      - DATABASE_USERNAME=postgres
-      - DATABASE_PASSWORD=postgres
+      - '8080:8080'  # Maps port 8080 of the container to port 8080 of the host machine.
+    environment:  # Environment variables for the Spring Boot API.
+      - DATABASE_URL=jdbc:postgresql://postgres:5432/devops  # JDBC connection string for PostgreSQL.
+      - DATABASE_USERNAME=postgres  # Username for connecting to PostgreSQL.
+      - DATABASE_PASSWORD=postgres  # Password for connecting to PostgreSQL.
     depends_on:
-      - postgres
+      - postgres  # Ensures the postgres service starts before the Spring Boot API.
 
   postgres:
-    container_name: postgres
-    image: postgres:16
+    container_name: postgres  # Name of the container for the PostgreSQL service.
+    image: postgres:16  # Specifies the version of the official PostgreSQL image.
     ports:
-      - '5432:5432'
-    environment:
-      - POSTGRES_DB=devops
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_USER=postgres
+      - '5432:5432'  # Maps port 5432 of the container to port 5432 of the host machine.
+    environment:  # Environment variables for configuring PostgreSQL.
+      - POSTGRES_DB=devops  # The name of the default database to be created.
+      - POSTGRES_PASSWORD=postgres  # The password for the default PostgreSQL user.
+      - POSTGRES_USER=postgres  # The default PostgreSQL user.
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data  # Mounts a persistent volume to store PostgreSQL data.
 
 volumes:
-  postgres_data:
+  postgres_data:  # Defines a named volume to persist PostgreSQL data.
