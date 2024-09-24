@@ -69,4 +69,7 @@ public class Movie {
      */
     @Column(name = "rating")
     private double rating;
+
+
+
 }
