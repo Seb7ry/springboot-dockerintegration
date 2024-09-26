@@ -24,10 +24,8 @@ jobs:
 
     - name: Install Docker
       run: |
-        sudo apt-get update
-        sudo apt-get install -y docker.io
-        sudo systemctl start docker
-        sudo systemctl enable docker
+        curl -fsSL https://get.docker.com -o get-docker.sh
+        sh get-docker.sh
           
     - name: Install Docker Compose
       run: |
