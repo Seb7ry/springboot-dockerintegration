@@ -1,6 +1,10 @@
-name: Java CI with Maven
+name: CI Workflow for Spring Boot
 
-on: [push, pull_request]
+on: 
+  push:
+    branches:
+      - main
+  pull_request:
 
 jobs:
   build:
@@ -38,4 +42,4 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: springboot-app
-        path: target/*.jar 
+        path: target/*.jar  # Esto sube el archivo .jar generado por Maven
