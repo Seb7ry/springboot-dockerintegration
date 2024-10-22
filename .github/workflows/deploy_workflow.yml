@@ -19,10 +19,14 @@ jobs:
       run: npm install -g railway
 
     - name: Download Artifact
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: springboot-app  # Descarga el artefacto (el .jar) subido en el workflow de CI
-
+        path: artifact
+        
+    - name: Test Artifact download
+      run: ls -R
+      
     - name: Deploy to Railway
       env:
         RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
