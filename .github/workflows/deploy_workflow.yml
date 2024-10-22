@@ -2,33 +2,60 @@ name: CD Workflow for Spring Boot
 
 on:
   workflow_run:
-    workflows: ["CI Workflow for Spring Boot"]  # El nombre del workflow de CI que debe completarse
+    workflows: ["CI Workflow for Spring Boot"]
     types:
-      - completed  # Solo se ejecutará cuando el CI haya sido completado
+      - completed
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}  # Solo ejecuta si el CI fue exitoso
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
+
+    - name: Install Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '14'
 
     - name: Install Railway CLI
       run: npm install -g railway
 
-    - name: Download Artifact
-      uses: actions/download-artifact@v4
+    - name: List and Download Artifact
+      uses: actions/github-script@v7
       with:
-        name: springboot-app  # Descarga el artefacto (el .jar) subido en el workflow de CI
-        path: artifact
-        
-    - name: Test Artifact download
-      run: ls -R
-      
+        script: |
+          const {default: artifactClient} = require('@actions/artifact/lib/internal')
+
+          const findBy = {
+            repositoryOwner: process.env.GITHUB_REPOSITORY.split('/')[0],
+            repositoryName: process.env.GITHUB_REPOSITORY.split('/')[1],
+            token: process.env.GITHUB_TOKEN,
+            workflowRunId: process.env.GITHUB_RUN_ID
+          }
+
+          const listResult = await artifactClient.listArtifacts({latest: true, findBy})
+          console.log(listResult)
+
+          const artifacts = listResult.artifacts
+          const expected = 'springboot-app'
+
+          const foundArtifact = artifacts.find(artifact => artifact.name === expected)
+
+          if (!foundArtifact) {
+            throw new Error(`Artifact ${expected} not found.`)
+          }
+
+          const {downloadPath} = await artifactClient.downloadArtifact(foundArtifact.id, {
+            path: './',
+            findBy
+          })
+
+          console.log('Downloaded artifact to:', downloadPath)
+
     - name: Deploy to Railway
       env:
         RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-      run: |
-        railway up
+      run: railway up
