@@ -15,7 +15,7 @@ jobs:
       with:
         java-version: '17'
         distribution: 'adopt'
-        
+
     - name: Build with Maven
       run: mvn clean package -DskipTests
 
@@ -26,10 +26,17 @@ jobs:
       run: |
         curl -fsSL https://get.docker.com -o get-docker.sh
         sh get-docker.sh
-          
+
     - name: Install Docker Compose
       run: |
         sudo apt-get install -y docker-compose
 
     - name: Docker-compose
       run: docker-compose up -d
+
+    # Almacenar el artefacto generado (.jar o .war)
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: springboot-app
+        path: target/*.jar  # Cambia esto si estás generando un .war o necesitas otra ruta
