@@ -34,9 +34,8 @@ jobs:
     - name: Docker-compose
       run: docker-compose up -d
 
-    # Almacenar el artefacto generado (.jar o .war)
     - name: Upload Artifact
       uses: actions/upload-artifact@v3
       with:
         name: springboot-app
-        path: target/*.jar  # Cambia esto si estás generando un .war o necesitas otra ruta
+        path: target/*.jar 
