@@ -1,0 +1,31 @@
+name: CD Workflow for Spring Boot
+
+on:
+  workflow_run:
+    workflows: ["CI Workflow for Spring Boot"]  # El nombre del workflow de CI que debe completarse
+    types:
+      - completed  # Solo se ejecutará cuando el CI haya sido completado
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}  # Solo ejecuta si el CI fue exitoso
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Install Railway CLI
+      run: |
+        curl -sSL https://cli.railway.app/install.sh | sh
+
+    - name: Download Artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: springboot-app  # Descarga el artefacto (el .jar) subido en el workflow de CI
+
+    - name: Deploy to Railway
+      env:
+        RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+      run: |
+        railway up
