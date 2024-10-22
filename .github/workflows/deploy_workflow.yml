@@ -20,7 +20,7 @@ jobs:
         curl -sSL https://cli.railway.app/install.sh | sh
 
     - name: Download Artifact
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v3
       with:
         name: springboot-app  # Descarga el artefacto (el .jar) subido en el workflow de CI
 
