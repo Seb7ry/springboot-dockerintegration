@@ -31,8 +31,8 @@ jobs:
       with:
         node-version: '14'
 
-    - name: Install Railway CLI
-      run: npm install -g railway
+    - name: Install new Railway CLI
+      run: npm install -g @railway/cli
 
     - name: Deploy to Railway
       env:
