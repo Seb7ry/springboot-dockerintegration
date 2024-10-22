@@ -26,12 +26,12 @@ jobs:
     - name: Run tests
       run: mvn test
 
-    - name: Install Node.js
+    - name: Install Node.js 16.x
       uses: actions/setup-node@v2
       with:
-        node-version: '14'
+        node-version: '16'
 
-    - name: Install new Railway CLI
+    - name: Install Railway CLI
       run: npm install -g @railway/cli
 
     - name: Deploy to Railway
